@@ -9,7 +9,9 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-TEST PUSH
+
+
+
 
 ##PROBLEM 3
 
@@ -29,7 +31,7 @@ plot(Credit)
 ```
 
 ```{r}
-CRMod1<-lm(Balance~Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity, data=Credit)
+CRMod1<-lm(Balance~., data=Credit)
 summary(CRMod1)
 par(mfrow=c(2,2))
 plot(CRMod1)
