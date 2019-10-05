@@ -1,6 +1,6 @@
 ---
 title: "525Final"
-author: "Team 1 -Jillian Chapman,Amanda,Tariq,Bo Tanner, Jennifer Snyder"
+author: "Team 1 - Jillian Chapman, Amanda Hall, Tariq Mansaray, Jennifer Snyder, David Tannerr"
 date: "10/8/2019"
 output: word_document
 ---
@@ -8,6 +8,22 @@ output: word_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Adding something
 
-again
+
+
+
+
+##PROBLEM 3
+
+Question - To better understand factors that influence the Balance variable.  Discuss the influential factors and the factors you choose to put in the model.
+
+```{r}
+library(ISLR)
+str(Credit)
+head(Credit)
+summary(Credit)
+```
+
+Problem Statement - What variables influence the amount of balance a client retains? The entire dataset will be consider when designating a model.
+
+
