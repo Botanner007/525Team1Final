@@ -28,20 +28,20 @@ summary(Credit)
 Problem Statement - What variables influence the amount of balance a client retains? The entire dataset will be consider when designating a model.
 
 ```{r}
-zero_Balanceonly=Credit%>% filter(Balance>0)
-summary(zero_Balanceonly)
-plot(zero_Balanceonly)
+Credit2=Credit%>% filter(Balance>0)
+summary(Credit2)
+plot(Credit2)
 ```
 
 ```{r}
-CRMod1<-lm(zero_Balanceonly~., data=Credit)
+CRMod1<-lm(Balance~., data=Credit2)
 summary(CRMod1)
 par(mfrow=c(2,2))
 plot(CRMod1)
 anova(CRMod1)
 ```
 ```{r}
-CRMod2<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit)
+CRMod2<-lm(Balance~Income+Limit+Rating+Cards+Age+Education+Gender+Student, data=Credit2)
 summary(CRMod2)
 par(mfrow=c(2,2))
 plot(CRMod2)
@@ -50,8 +50,9 @@ anova(CRMod2,CRMod1)
 ```
 
 ```{r}
-attach(Credit)
-summary(powerTransform(cbind(Income,Limit,Rating,Cards,Age,Student)))
+attach(Credit2)
+summary(powerTransform(cbind(Income+Limit+Rating+Cards+Age+Education+Gender+Student)))
+detach(Credit2)
 ```
 
 ```{r}
