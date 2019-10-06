@@ -60,9 +60,182 @@ detach(Credit2)
 ```
 
 ```{r}
-CRMod3<-lm(sqrt(Balance)~Income+sqrt(Limit)+sqrt(Rating)+sqrt(Cards)+Age^2+Student, data=Credit)
-summary(CRMod3)
+##CRMod3
+CRMod4<-lm(Balance~Income+Limit+Rating+Cards+Age+Education+Gender+Student+Income*Limit+Rating*Limit, data=Credit2)
+summary(CRMod4)
 par(mfrow=c(2,2))
-plot(CRMod3)
-anova(CRMod3)
+plot(CRMod4)
+anova(CRMod4)
+anova(CRMod2,CRMod4)
 ```
+
+
+### Problem 4
+
+
+head(Salaries)
+summary(Salaries)
+plot(Salaries)
+str(Salaries)
+unique(Salaries$rank)
+unique(Salaries$discipline)
+unique(Salaries$sex)
+
+sexmeans <- tapply(Salaries$salary, Salaries$sex, mean)
+
+sexmeans[2]-sexmeans[1]
+
+t.test(x=Salaries$salary[Salaries$sex=="Male"], y=Salaries$salary[Salaries$sex=="Female"], alternative="greater")
+salariesfit <- lm(salary ~., data=Salaries)
+summary(salariesfit)
+avPlots(salariesfit)
+
+anova(salariesfit)
+
+par(mfrow=c(2,2))
+plot(salariesfit)
+ncvTest(salariesfit)
+
+summary(powerTransform(cbind(salary, rank, discipline, yrs.since.phd, yrs.service, sex) ~1, Salaries, family="bcnPower"))
+
+
+salariesassump <- lm(salary^(-1)~rank+discipline+I(yrs.since.phd^(0.5))+I(yrs.service^(0.5))+sex, data=Salaries)
+
+summary(salariesassump)
+par(mfrow=(2,2))
+plot(salariesassump)
+ncvTest(salariesassump)
+
+anova(salariesassump)
+
+
+mod <- step(salariesassump, scope=list(lower=~1, upper=~rank+discipline+I(yrs.since.phd^(0.5))+I(yrs.service^(0.5))+sex), data=salaries)
+
+
+
+```{r}
+head(Salaries)
+summary(Salaries)
+```
+```{r}
+plot(Salaries)
+str(Salaries)
+unique(Salaries$rank)
+unique(Salaries$discipline)
+unique(Salaries$sex)
+```
+I can see the data and the type of variables I am working with. 
+```{r}
+unique(Salaries$rank)
+unique(Salaries$discipline)
+unique(Salaries$sex)
+```
+
+we can also see the levels of each factors we are working with. 
+
+We are going to look at the preliminary difference in means.
+```{r}
+sexmeans <- tapply(Salaries$salary, Salaries$sex, mean)
+
+sexmeans[2]-sexmeans[1]
+```
+
+Let's run a t-test now between the difference in means.
+
+```{r}
+t.test(x=Salaries$salary[Salaries$sex=="Male"], y=Salaries$salary[Salaries$sex=="Female"], alternative="greater")
+isalariesfit <- lm(salary ~., data=Salaries)
+```
+Let's run a linear regression using all variables, with Salaries as the response variable
+
+```{r}
+salariesfit <- lm(salary ~., data=Salaries)
+summary(salariesfit)
+```
+intercept is a female, assistnat professor, with the discipline a.  The male variable seems to show non significance with the adjustment for male at any significance level. Years since phd, and years of service only show significance if we are testing at a level of 10% and 5%.
+
+```{r}
+anova(salariesfit)
+```
+Anova seems to show that years since phd and sex seem to be variables that do not matter in this model. It could possibly be due to the fact that we only have data for 39 female professors, and 358 male professors. In general we may not have enough data to show if there is truly a gender gap in pay. The more important question is a gender gap in hire from what our descriptive data tells us. Let's check for assumptions.
+
+```{r}
+par(mfrow=c(2,2))
+plot(salariesfit)
+```
+```{r}
+ncvTest(salariesfit)
+```
+
+Seems that normalization of residuals and the non constant variance assumptions have been violated. It is a possibility of a curvature in our model as well. Let's try transforming our response variable using the box-cox method.
+
+```{r}
+boxCox(salariesfit)
+```
+
+Our lambda is -1, meaning to transform our variable predictor with a power of -1. Now, this means to take the inverse of our response variable. 
+
+```{r}
+salariesassump <- lm(salary^(-1)~rank+discipline+yrs.since.phd+yrs.service+sex, data=Salaries)
+summary(salariesassump)
+```
+```{r}
+par(mfrow=c(2,2))
+plot(salariesassump)
+ncvTest(salariesassump)
+```
+Years since phd still seems to be a insignificant at any level. The adjustment for male is not significant when we test at a 5% significance level.As far as our assumptions, they are better than the previous model before our transformation. 
+
+Let's try a full transformation of all our variables and see what they suggest. 
+
+```{r}
+summary(powerTransform(cbind(salary, rank, discipline, yrs.since.phd, yrs.service, sex) ~1, Salaries, family="bcnPower"))
+```
+
+The lambda values suggest us to transform the variables "rank" and "sex", which are factor variables. Using the power of a factor has absolutely no interpretability. The suggestion of putting yrs.since.phd and yrs.service also suggest to use the power of 0.5, which is the same as taking the square root of those variables. Interpretation may become an issue with the latter variables as well. 
+```{r}
+salariesassump2 <- lm(salary^(-1)~rank+discipline+I(yrs.since.phd^(0.5))+I(yrs.service^(0.5))+sex, data=Salaries)
+summary(salariesassump2)
+
+```
+```{r}
+par(mfrow=c(2,2))
+plot(salariesassump2)
+ncvTest(salariesassump2)
+```
+
+The assumptions are "more" met compared to the original model, but it seems as if the non constant variacne is a little worse compared to the second model. Also, the interpretability of using the power of 0.5, or the square root of predictor variables is very hard and hazy. 
+
+We will stick with the second model, the one where only the resopnse is transformed.
+
+```{r}
+anova(salariesassump)
+```
+
+Years since pHD is once again a variable that doesn't seem to matter in our model. Sex may be a usless variable as well if we test it against a significance of 5%. 
+
+To fully test the best model we can use, we are finally going to implement stepwise selection using backwards, forwards, and the stepwise methods.
+```{r}
+mod <- step(salariesassump, scope=list(lower=~1, upper=~rank+discipline+yrs.since.phd+yrs.service+sex), data=Salaries)
+```
+The stepwise method says using all variables except yrs.since.phd is acceptable. 
+```{r}
+mod2 <- step(salariesassump, scope=list(lower=~1, upper=~rank+discipline+yrs.since.phd+yrs.service+sex), direction="backward", data=Salaries)
+```
+Backwards method seems to agree. 
+```{r}
+salariesintc. <- lm(salary^(-1)~1, data=Salaries)
+mod3 <- step(salariesintc., scope=list(lower=~1, upper=~rank+discipline+yrs.since.phd+yrs.service+sex), direction="forward", data=Salaries)
+
+```
+All models seemt to agree that the only variable that we shold get rid of is the yrs.since. phD variable.
+
+```{r}
+salariesassump3 <- lm(salary^(-1)~rank+discipline+yrs.service+sex, data=Salaries)
+summary(salariesassump3)
+```
+
+Now to interpret what our data is trying to tell us..........
+
+
+From our data, sex is an important variable, but it is difficult to tell if there is a gender gap. Looking at the summary table of our linear regression model after transformation, the adustment from female to male seems to not matter when we are testing at a 5 % significance level, at a 10% level, then there is a difference in pay between genders with males making a lttle less when we adjust from female to male. Our original t-test tells us that there is a gender gap in pay, however. There may be a discrimination in pay when it comes to gender, but with more males in our data than females in the data set that was presented to us, it is very hard to tell. 
