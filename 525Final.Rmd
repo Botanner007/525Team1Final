@@ -20,6 +20,7 @@ Question - To better understand factors that influence the Balance variable.  Di
 ```{r}
 library(dplyr)
 library(ISLR)
+library(alr4)
 str(Credit)
 head(Credit)
 summary(Credit)
@@ -50,8 +51,11 @@ anova(CRMod2,CRMod1)
 ```
 
 ```{r}
+residualPlot(CRMod2)
+ncvTest(CRMod2)
+boxCox(CRMod2)
 attach(Credit2)
-summary(powerTransform(cbind(Income+Limit+Rating+Cards+Age+Education+Gender+Student)))
+summary(powerTransform(cbind(Balance,Income,Limit,Rating,Cards,Age,Education,Gender,Student)))
 detach(Credit2)
 ```
 
