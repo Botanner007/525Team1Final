@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Question - To better understand factors that influence the Balance variable.  Discuss the influential factors and the factors you choose to put in the model.
 
 ```{r}
+library(dplyr)
 library(ISLR)
 str(Credit)
 head(Credit)
@@ -27,11 +28,13 @@ summary(Credit)
 Problem Statement - What variables influence the amount of balance a client retains? The entire dataset will be consider when designating a model.
 
 ```{r}
-plot(Credit)
+zero_Balanceonly=Credit%>% filter(Balance>0)
+summary(zero_Balanceonly)
+plot(zero_Balanceonly)
 ```
 
 ```{r}
-CRMod1<-lm(Balance~., data=Credit)
+CRMod1<-lm(zero_Balanceonly~., data=Credit)
 summary(CRMod1)
 par(mfrow=c(2,2))
 plot(CRMod1)
@@ -43,4 +46,18 @@ summary(CRMod2)
 par(mfrow=c(2,2))
 plot(CRMod2)
 anova(CRMod2)
+anova(CRMod2,CRMod1)
+```
+
+```{r}
+attach(Credit)
+summary(powerTransform(cbind(Income,Limit,Rating,Cards,Age,Student)))
+```
+
+```{r}
+CRMod3<-lm(sqrt(Balance)~Income+sqrt(Limit)+sqrt(Rating)+sqrt(Cards)+Age^2+Student, data=Credit)
+summary(CRMod3)
+par(mfrow=c(2,2))
+plot(CRMod3)
+anova(CRMod3)
 ```
