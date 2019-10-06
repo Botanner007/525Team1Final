@@ -60,9 +60,11 @@ detach(Credit2)
 ```
 
 ```{r}
-CRMod3<-lm(sqrt(Balance)~Income+sqrt(Limit)+sqrt(Rating)+sqrt(Cards)+Age^2+Student, data=Credit)
-summary(CRMod3)
+##CRMod3
+CRMod4<-lm(Balance~Income+Limit+Rating+Cards+Age+Education+Gender+Student+Income*Limit+Rating*Limit, data=Credit2)
+summary(CRMod4)
 par(mfrow=c(2,2))
-plot(CRMod3)
-anova(CRMod3)
+plot(CRMod4)
+anova(CRMod4)
+anova(CRMod2,CRMod4)
 ```
