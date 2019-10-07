@@ -98,8 +98,20 @@ The Plots for CRMod1 seem to fit best while CRMod4 has the highest r^2 value whi
 
 
 From the subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
+```{r}
+##This is the log model comparisons
+CR2Mod2<-lm(log(Balance)~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
+summary(CRMod2)
+par(mfrow=c(2,2))
+plot(CR2Mod2)
+anova(CR2Mod2)
+anova(CR2Mod2,CR2Mod1)
+```
+
 
 ```{r}
+##This is the no transformation model comparisons
+CRMod1<-lm(Balance~., data=Credit2)
 CRMod2<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
 summary(CRMod2)
 par(mfrow=c(2,2))
@@ -120,8 +132,18 @@ detach(Credit2)
 ```
 
 The ncvTest's p-value shows non-signficance; thus, constant variance is present.  The boxCox proves curious as there is no confidence level shown other than 1 and the curve is not the typical arc expected. When we compare it to the powerTranform the likelihood ratios both show at significant level, confirming transforming to log or not transforming at all is not the same as using the recommended transformation provided.  The recommended transformation for all variables except the Student factor, appears to be to the power of 1.  Since increasing a variable to the power of one would simply be it's own number, we will opt to not transform the variables.
+```{r}
+##This is the log model comparisons
+CR2Mod3<-lm(log(Balance)~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
+summary(CR2Mod3)
+par(mfrow=c(2,2))
+plot(CR2Mod3)
+anova(CR2Mod3)
+anova(CR2Mod2,CR2Mod3)
+```
 
 ```{r}
+##This is the no transformation model comparisons
 CRMod3<-lm(Balance~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
 summary(CRMod3)
 par(mfrow=c(2,2))
