@@ -153,8 +153,18 @@ anova(CRMod2,CRMod3)
 ```
 
 
+```{r}
+##This is the log model comparisons
+CR2Mod4<-lm(log(Balance)~Income+Limit+Rating+Age+Student+Income*Limit+Rating*Limit+Income*Rating*Limit*Age, data=Credit2)
+summary(CR2Mod4)
+par(mfrow=c(2,2))
+plot(CR2Mod4)
+anova(CR2Mod4)
+anova(CR2Mod3,CR2Mod4)
+```
+This Model a few other interactions that may have an effect. (I am just exploring here)
 
-
+Maybe we need a BoxCox to help normalize our data? 
 
 
 ### Problem 4
