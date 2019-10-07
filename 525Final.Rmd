@@ -94,7 +94,7 @@ par(mfrow=c(2,2))
 plot(CRMod4)
 anova(CRMod4)
 ```
-The Plots for CRMod1 seem to fit best while CRMod4 has the highest r^2 value which means it is the most significant. 
+The Plots for CRMod1 seem to fit best while CRMod4 has the highest r^2 value which means it appears to  most significant, but r squared values shouldnt soley decide on the fit of a model. We will continue with the log transformation since it seems to show the best fit for the model. Next, we will eliminate any insignificant variable to create a simpler model, and then explore if any interactions would help our model.
 
 
 From the subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
