@@ -17,6 +17,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Question - To better understand factors that influence the Balance variable.  Discuss the influential factors and the factors you choose to put in the model.
 
+To begin, we evaluate our dataframe information.
+
 ```{r}
 library(dplyr)
 library(ISLR)
@@ -26,13 +28,18 @@ head(Credit)
 summary(Credit)
 ```
 
-Problem Statement - What variables influence the amount of balance a client retains? The entire dataset will be consider when designating a model.
+Our data is derived from a simulated data set containing information on ten thousand customers.  However, we have only been provided with 400 observations on the 12 variables.  We can see from the initial summary that Balance could contain a zero balance.  Since credit card companies typically make their money from the interest paid by a balance holder, we will subset the data to include only clients with a balance greater than zero.   There are no n/a's or negative data, so we will not have to consider these situations.
+
+Problem Statement - What variables influence the amount of balance a client retains? 
+
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
 summary(Credit2)
 plot(Credit2)
 ```
+
+Our initial model will contain all variables present in the subsetted data set as predictors, except Balance, which will be the response variable.
 
 ```{r}
 CRMod1<-lm(Balance~., data=Credit2)
@@ -41,8 +48,11 @@ par(mfrow=c(2,2))
 plot(CRMod1)
 anova(CRMod1)
 ```
+
+From the subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
+
 ```{r}
-CRMod2<-lm(Balance~Income+Limit+Rating+Cards+Age+Education+Gender+Student, data=Credit2)
+CRMod2<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
 summary(CRMod2)
 par(mfrow=c(2,2))
 plot(CRMod2)
@@ -50,28 +60,34 @@ anova(CRMod2)
 anova(CRMod2,CRMod1)
 ```
 
+Our ANOVA comparing CRMod1 (the bigger model) and CRMod2 (the smaller model) shows a p-value of greater than 0.05.  Due to this, we would reject the notion that the models are different and choose the simplier model to work with.  The review of our plots confirm the similarity of the the models.  To be sure the CRMod2 is exactly what we need, we'll run a ncvTest, boxCox and powerTransformation.
+
 ```{r}
 residualPlot(CRMod2)
 ncvTest(CRMod2)
 boxCox(CRMod2)
 attach(Credit2)
-summary(powerTransform(cbind(Balance,Income,Limit,Rating,Cards,Age,Education,Gender,Student)))
+summary(powerTransform(cbind(Balance,Income,Limit,Rating,Cards,Age,Student)))
 detach(Credit2)
 ```
 
+The ncvTest's p-value shows non-signficance; thus, constant variance is present.  The boxCox proves curious as there is no confidence level shown other than 1 and the curve is not the typical arc expected. When we compare it to the powerTranform the likelihood ratios both show at significant level, confirming transforming to log or not transforming at all is not the same as using the recommended transformation provided.  The recommended transformation for all variables except the Student factor, appears to be to the power of 1.  Since increasing a variable to the power of one would simply be it's own number, we will opt to not transform the variables.
+
 ```{r}
-##CRMod3
-CRMod4<-lm(Balance~Income+Limit+Rating+Cards+Age+Education+Gender+Student+Income*Limit+Rating*Limit, data=Credit2)
+CRMod3<-lm(Balance~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
 summary(CRMod4)
 par(mfrow=c(2,2))
-plot(CRMod4)
-anova(CRMod4)
-anova(CRMod2,CRMod4)
+plot(CRMod3)
+anova(CRMod3)
+anova(CRMod2,CRMod3)
 ```
 
 
-### Problem 4
 
+
+
+
+### Problem 4
 
 
 For this problem we used the Salaries data in the carData package to investigate the gender gap in the data. 
