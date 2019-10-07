@@ -32,6 +32,24 @@ Our data is derived from a simulated data set containing information on ten thou
 
 Problem Statement - What variables influence the amount of balance a client retains? 
 
+```{r}
+CreditM1<-lm(Balance~., data=Credit)
+summary(CreditM1)
+par(mfrow=c(2,2))
+plot(CreditM1)
+anova(CreditM1)
+```
+
+```{r}
+CreditM2<-lm(sqrt(Balance)~., data=Credit)
+summary(CreditM2)
+par(mfrow=c(2,2))
+plot(CreditM2)
+anova(CreditM2)
+```
+
+
+
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
@@ -40,6 +58,7 @@ plot(Credit2)
 ```
 
 Our initial model will contain all variables present in the subsetted data set as predictors, except Balance, which will be the response variable.
+
 
 ```{r}
 CRMod1<-lm(Balance~., data=Credit2)
