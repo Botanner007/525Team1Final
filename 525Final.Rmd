@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-
-
 ##PROBLEM 3
 
-Question - To better understand factors that influence the Balance variable.  Discuss the influential factors and the factors you choose to put in the model.
+In the Credit data in the ISLR package it contains 400 customers and information on their credit history. For full information of the data look at the help file. A company has approached us to better understand factors that influence the Balance variable which is average credit card balance in USD. Using the information in the model discuss the influential factors, and discuss the factors you choose to put in the model. Do you have any concerns about the use of certain variables in the model? Discuss how your model was created and any insights you can provide based on the results. HINT: Adding Gender and/or Ethnicity could be controversial or illegal in some uses of this this model you should discuss your decision on these variables and how it effects the organizations ability to use your model for prediction or inference.
+
+To better understand factors that influence the average credit card balance variable ("Balance") we will explore various modeling methods and determine which variables provide us with the most useful inferences about the dataset. By determining variables to include and exclude in our analysis we will be able to provide the customer with some valuable insights for their business.
 
 To begin, we evaluate our dataframe information.
 
@@ -28,12 +28,12 @@ head(Credit)
 summary(Credit)
 ```
 
-Our data is derived from a simulated data set containing information on ten thousand customers.  However, we have only been provided with 400 observations on the 12 variables.  We can see from the initial summary that Balance could contain a zero balance.  Since credit card companies typically make their money from the interest paid by a balance holder, we will subset the data to include only clients with a balance greater than zero.   There are no n/a's or negative data, so we will not have to consider these situations.
+Our dataset (Credit) is a subset of data derived from a simulated dataset containing information on ten thousand customers.  The subset contains 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their accounts. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
 
-Problem Statement - What variables influence the amount of balance a client retains? 
+Problem Statement - What variables influence the Balance amount a customer retains? 
 
 
-We first attempt to fit a model with no transformation to the variable
+We first attempt to fit a model with no transformation to the variables, including zeros, to depict the influence of those 0s on the model.
 
 ```{r}
 CreditM1<-lm(Balance~., data=Credit)
@@ -42,7 +42,7 @@ par(mfrow=c(2,2))
 plot(CreditM1)
 anova(CreditM1)
 ```
-We get some pretty consistent variance, but we also have a problem where a balance of 0 is negativly affecting out plots. We will test some transformations to the Balance to see if that can solve our problem.
+While variance is fairly consistent, we can also see clearly the Balnace=0 values skewing the plots. We will test some transformations to the Balance to see if a better fit model can be reached while including all observations (including Balance=0).
 
 
 ```{r}
@@ -58,7 +58,7 @@ par(mfrow=c(2,2))
 plot(CreditM4)
 anova(CreditM4)
 ```
-These transformations are also effected by the presence of 0's in our data. For the purpose of this assignment, we feel that omitting 0's will not effect our conclusion, but allow us to focus on the more important part of the dataset. We will continue with our search for a fitted model using a filter to exclude 0's, as data set Credit2. 
+The plots after transformations are also effected by the presence of 0's in the Credit data. For the purpose of this analysis, omitting 0's will allow for the most effective conclusions and will allow models to provide clearer insight into the varibale relationships. We will continue to seek a well-fitted model using a filter to exclude 0's, naming the subset Credit2. 
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
@@ -66,7 +66,7 @@ summary(Credit2)
 plot(Credit2)
 ```
 
-Our initial models will contain all variables present in the subsetted data set as predictors, except Balance, which will be the response variable. In order to find the best fit, we will use every transfromation that we think could help fit the model. 
+Our initial models will contain all variables present in the subset Credit2 as predictors, except Balance, which will be the response variable. In order to find the best fit, we will use multiple transfromations and fit multiple models. 
 
 
 ```{r}
@@ -98,20 +98,8 @@ The Plots for CRMod1 seem to fit best while CRMod4 has the highest r^2 value whi
 
 
 From the subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
-```{r}
-##This is the log model comparisons
-CR2Mod2<-lm(log(Balance)~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
-summary(CRMod2)
-par(mfrow=c(2,2))
-plot(CR2Mod2)
-anova(CR2Mod2)
-anova(CR2Mod2,CR2Mod1)
-```
-
 
 ```{r}
-##This is the no transformation model comparisons
-CRMod1<-lm(Balance~., data=Credit2)
 CRMod2<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
 summary(CRMod2)
 par(mfrow=c(2,2))
@@ -132,18 +120,8 @@ detach(Credit2)
 ```
 
 The ncvTest's p-value shows non-signficance; thus, constant variance is present.  The boxCox proves curious as there is no confidence level shown other than 1 and the curve is not the typical arc expected. When we compare it to the powerTranform the likelihood ratios both show at significant level, confirming transforming to log or not transforming at all is not the same as using the recommended transformation provided.  The recommended transformation for all variables except the Student factor, appears to be to the power of 1.  Since increasing a variable to the power of one would simply be it's own number, we will opt to not transform the variables.
-```{r}
-##This is the log model comparisons
-CR2Mod3<-lm(log(Balance)~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
-summary(CR2Mod3)
-par(mfrow=c(2,2))
-plot(CR2Mod3)
-anova(CR2Mod3)
-anova(CR2Mod2,CR2Mod3)
-```
 
 ```{r}
-##This is the no transformation model comparisons
 CRMod3<-lm(Balance~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
 summary(CRMod3)
 par(mfrow=c(2,2))
@@ -153,18 +131,8 @@ anova(CRMod2,CRMod3)
 ```
 
 
-```{r}
-##This is the log model comparisons
-CR2Mod4<-lm(log(Balance)~Income+Limit+Rating+Age+Student+Income*Limit+Rating*Limit+Income*Rating*Limit*Age, data=Credit2)
-summary(CR2Mod4)
-par(mfrow=c(2,2))
-plot(CR2Mod4)
-anova(CR2Mod4)
-anova(CR2Mod3,CR2Mod4)
-```
-This Model a few other interactions that may have an effect. (I am just exploring here)
 
-Maybe we need a BoxCox to help normalize our data? 
+
 
 
 ### Problem 4
