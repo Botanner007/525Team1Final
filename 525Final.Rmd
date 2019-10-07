@@ -138,9 +138,9 @@ anova(CRMod2,CRMod3)
 ### Problem 4
 
 
-For this problem we used the Salaries data in the carData package to investigate the gender gap in the data. 
+For this problem we used the Salaries data in the carData package to investigate the gender gap in the data. Our data represents the salaries of professors in the 2008-2009 year in an unspecified college. The data set consists of 397 observations with 6 variables each. The variables we will be looking at are "rank", "discipline", "yrs.since.PhD" or years since PhD, "yrs.service" or years of service, "sex", and finally "salary" as our response variable.
 
-We looked at the help file and summary of the Salaries data. 
+We looked at the help file and summary of the Salaries data to see exactly what we aer working with. 
 ```{r}
 library(carData)
 data("Salaries")
@@ -153,7 +153,7 @@ plot(Salaries)
 str(Salaries)
 
 ```
-We can see the data and the type of variables we are working with in the data. 
+We can see the data and the type of variables we are working with in the data. Each variable set seems to be correlated all over the place. Several have strage plots due to them being factor variables. 
 
 ```{r}
 unique(Salaries$rank)
@@ -189,7 +189,7 @@ We ran a t-test to test that null hypothesis that the mean salary of males in th
 t.test(x=Salaries$salary[Salaries$sex=="Male"], y=Salaries$salary[Salaries$sex=="Female"], alternative="greater")
 isalariesfit <- lm(salary ~., data=Salaries)
 ```
-Using a significance level of 0.01, I would accept the null hypothesis that the mean salary of males is less than or equal to the mean salary of females.
+Looking at the t-test, it looks like we are not able to accept the null at any significance level. We will go further and create models to help explain the salary data. 
 
 We created a model to see what variables affect salary, with salary as the response variable and the remaining variables as the predictors. 
 ```{r}
@@ -199,12 +199,11 @@ summary(salariesfit)
 We can see that the intercept is 65955, which is the baseline salary in USD for a female, assistant professor with a discipline of 'a'. ## Ph.D??##
 I can see that all other variables held constant that the sex of Male would increase that baseline salary by 4783; however, looking at the p-value of 0.215, indicates it is not significant at the 0.05 or 0.01 level. Also, yrs.since.phd and yrs.service are not significant at the 0.01 level. Also, I can see how salary increases when faculty members get promoted to an Associate professor and to a Full professor.
 
-Next, we used an ANOVA to compare the significance of the mean of the data.
-## IS THAT CORRECT WORDING? ^^ ###
+Next, we used an ANOVA to compare the significance of each variable using their variance.
 ```{r}
 anova(salariesfit)
 ```
-The anova tells us that years since phd and sex seem to be variables that do not matter in this model based on their p-values. It could possibly be due to the fact that we only have data for 39 female professors, and 358 male professors. In general, we may not have enough data to show if there is truly a gender gap in pay. The more important question is a gender gap in hire from what our descriptive data tells us. Let's check for assumptions.
+The anova tells us that years since phd and sex seem to be variables that do not matter in this model based on their p-values. It could possibly be due to the fact that we only have data for 39 female professors, and 358 male professors. In general, we may not have enough data to show if there is truly a gender gap in pay. The more important question is is there a gender gap in hire from what our descriptive data tells us? Let's check for assumptions.
 
 We plotted the model to check for non-constant, variance, normaility and outliers in the data, and we used ncvTest 
 ```{r}
@@ -221,10 +220,10 @@ We looked at the boxCox to see how and if we should transform the repsponse vari
 ```{r}
 boxCox(salariesfit)
 ```
-Our lambda is -1, meaning to transform our variable predictor with a power of -1. 
+Our lambda is -1, meaning to transform our resposne variable with a power of -1. 
 
 Then, we took the inverse of our response variable. 
-### TOOK THE INVERSE OF RESPONSE OR PREDICTOR? ##
+
 ```{r}
 salariesassump <- lm(salary^(-1)~rank+discipline+yrs.since.phd+yrs.service+sex, data=Salaries)
 summary(salariesassump)
@@ -295,6 +294,18 @@ Now to interpret what our data is trying to tell us..........
 
 
 From our data, we see that sex is an important variable, but it is difficult to identify if there is a gender gap between Male and Female. Looking at the summary table of our linear regression model after the transformation, the adjustment from female to male seems to not play significant role when we are testing at a 5% significance level; however, at a 10% level, there is a difference in pay between genders, which indicates males make slightly less when we adjust from female to male. However, our original t-test tells us that there is a gender gap in pay. There may be a discrimination in pay when it comes to gender, but with more males in our data than females in the data set that was presented to us, it is very hard to identify. 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
