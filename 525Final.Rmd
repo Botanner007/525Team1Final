@@ -28,12 +28,11 @@ head(Credit)
 summary(Credit)
 ```
 
-Our dataset (Credit) is a subset of data derived from a simulated dataset containing information on ten thousand customers.  The subset contains 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their accounts. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
+Our dataset (Credit) is a subset of data derived from a simulated dataset containing information on ten thousand customers.  The subset contains 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their account. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset, called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
 
 Problem Statement - What variables influence the Balance amount a customer retains? 
 
-
-We first attempt to fit a model with no transformation to the variables, including zeros, to depict the influence of those 0s on the model.
+We first attempt to fit a model with no transformation of the variables, including zeros, to depict the influence of those 0s on the model.
 
 ```{r}
 CreditM1<-lm(Balance~., data=Credit)
@@ -42,7 +41,7 @@ par(mfrow=c(2,2))
 plot(CreditM1)
 anova(CreditM1)
 ```
-While variance is fairly consistent, we can also see clearly the Balnace=0 values skewing the plots. We will test some transformations to the Balance to see if a better fit model can be reached while including all observations (including Balance=0).
+While variance is fairly consistent, we can clearly see the Balnace=0 values skewing the plots. We will test some transformations to the Balance to see if a better model fit can be reached while including all of the observations (including Balance=0).
 
 
 ```{r}
@@ -58,7 +57,7 @@ par(mfrow=c(2,2))
 plot(CreditM4)
 anova(CreditM4)
 ```
-The plots after transformations are also effected by the presence of 0's in the Credit data. For the purpose of this analysis, omitting 0's will allow for the most effective conclusions and will allow models to provide clearer insight into the varibale relationships. We will continue to seek a well-fitted model using a filter to exclude 0's, naming the subset Credit2. 
+The plots after transformations are still effected by the presence of 0's in the Credit data. For the purpose of this analysis, omitting 0's will allow for the most effective conclusions and will allow models to provide clearer insight into the varibale relationships. We will continue to seek a well-fit model using a filter to exclude 0's and naming the subset Credit2. 
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
@@ -94,40 +93,42 @@ par(mfrow=c(2,2))
 plot(CR2Mod4)
 anova(CR2Mod4)
 ```
-The Plots for CRMod1 seem to fit best while CRMod4 has the highest r^2 value which means it appears to  most significant, but r squared values shouldnt soley decide on the fit of a model. We will continue with the log transformation since it seems to show the best fit for the model. Next, we will eliminate any insignificant variable to create a simpler model, and then explore if any interactions would help our model.
+The Plots for CR2Mod1 seem to fit best while CR2Mod4 has the highest R-squared value which means it appears to be most significant, but R-squared values shouldn't soley decide on the fit of a model. We will continue with the log transformation since it seems to show the best fit for the model. Next, we will eliminate any insignificant variable to create a simpler model, and then explore if any interactions would help our model.
 
+---- replacement text
+CR2Mod4 has the highest R-squared value which means we can account for 99.94% of _________, but R-squared values shouldn't soley decide the fit of a model. If we review the plots generated, CR2Mod4 also appears to look most like we want to see.  In light of this information, we will continue with CR2Mod4 and eliminate any insignificant variables to create a simpler model.  Afterwards, we'll explore the effect of interactions in the hope that they would improve our model even more.
+---- 
 
-From the subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
+From the Credit2 subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
 
 ```{r}
-CRMod2<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
-summary(CRMod2)
+CR2Mod5<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
+summary(CR2Mod5)
 par(mfrow=c(2,2))
-plot(CRMod2)
-anova(CRMod2)
-anova(CRMod2,CRMod1)
+plot(CR2Mod5)
+anova(CR2Mod5)
+anova(CR2Mod5,CR2Mod4)
 ```
 
-Our ANOVA comparing CRMod1 (the bigger model) and CRMod2 (the smaller model) shows a p-value of greater than 0.05.  Due to this, we would reject the notion that the models are different and choose the simplier model to work with.  The review of our plots confirm the similarity of the the models.  To be sure the CRMod2 is exactly what we need, we'll run a ncvTest, boxCox and powerTransformation.
+Our ANOVA comparing CR2Mod4 (the bigger model) and CR2Mod5 (the smaller model) shows a p-value of greater than 0.05.  Due to this, we would reject the notion that the models are different and choose the simplier model to work with.  The review of our plots confirm the similarity of the the models.  To be sure the CR2Mod5 is exactly what we need, we'll run a ncvTest, boxCox and powerTransformation.
 
 ```{r}
-residualPlot(CRMod2)
-ncvTest(CRMod2)
-boxCox(CRMod2)
+ncvTest(CR2Mod5)
+boxCox(CR2Mod5)
 attach(Credit2)
 summary(powerTransform(cbind(Balance,Income,Limit,Rating,Cards,Age,Student)))
 detach(Credit2)
 ```
 
-The ncvTest's p-value shows non-signficance; thus, constant variance is present.  The boxCox proves curious as there is no confidence level shown other than 1 and the curve is not the typical arc expected. When we compare it to the powerTranform the likelihood ratios both show at significant level, confirming transforming to log or not transforming at all is not the same as using the recommended transformation provided.  The recommended transformation for all variables except the Student factor, appears to be to the power of 1.  Since increasing a variable to the power of one would simply be it's own number, we will opt to not transform the variables.
+The ncvTest's p-value shows non-signficance; thus, constant variance is present.  The boxCox proves curious as there is no confidence level shown other than at 1 and the curve is not the typical arc expected. When we compare it to the powerTranform the likelihood ratios both show at significant level, confirming transforming to log or not transforming at all is not the same as using the recommended transformation provided.  The recommended transformation for all variables except the Student factor, appears to be to the power of 1.  Since increasing a variable to the power of one would simply be it's own number, we will opt to not transform the variables.  An move to add interactions in the hope that they will improve our model.
 
 ```{r}
-CRMod3<-lm(Balance~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
-summary(CRMod3)
+CR2Mod6<-lm(Balance~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
+summary(CR2Mod6)
 par(mfrow=c(2,2))
-plot(CRMod3)
-anova(CRMod3)
-anova(CRMod2,CRMod3)
+plot(CR2Mod6)
+anova(CR2Mod6)
+anova(CR2Mod5,CR2Mod6)
 ```
 
 
@@ -144,7 +145,6 @@ We looked at the help file and summary of the Salaries data.
 ```{r}
 library(carData)
 data("Salaries")
-help(Salaries)
 summary(Salaries)
 ```
 Next, we plotted the data and viewed unique elements. 
