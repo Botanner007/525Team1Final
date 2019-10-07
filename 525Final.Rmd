@@ -32,6 +32,9 @@ Our data is derived from a simulated data set containing information on ten thou
 
 Problem Statement - What variables influence the amount of balance a client retains? 
 
+
+We first attempt to fit a model with no transformation to the variable
+
 ```{r}
 CreditM1<-lm(Balance~., data=Credit)
 summary(CreditM1)
@@ -39,6 +42,8 @@ par(mfrow=c(2,2))
 plot(CreditM1)
 anova(CreditM1)
 ```
+We get some pretty consistent variance, but we also have a problem where a balance of 0 is negativly affecting out plots. We will test some transformations to the Balance to see if that can solve our problem.
+
 
 ```{r}
 CreditM2<-lm(sqrt(Balance)~., data=Credit)
@@ -46,10 +51,14 @@ summary(CreditM2)
 par(mfrow=c(2,2))
 plot(CreditM2)
 anova(CreditM2)
+
+CreditM4<-lm(Balance^2~., data=Credit)
+summary(CreditM4)
+par(mfrow=c(2,2))
+plot(CreditM4)
+anova(CreditM4)
 ```
-
-
-
+These transformations are also effected by the presence of 0's in our data. For the purpose of this assignment, we feel that omitting 0's will not effect our conclusion, but allow us to focus on the more important part of the dataset. We will continue with our search for a fitted model using a filter to exclude 0's, as data set Credit2. 
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
@@ -57,16 +66,36 @@ summary(Credit2)
 plot(Credit2)
 ```
 
-Our initial model will contain all variables present in the subsetted data set as predictors, except Balance, which will be the response variable.
+Our initial models will contain all variables present in the subsetted data set as predictors, except Balance, which will be the response variable. In order to find the best fit, we will use every transfromation that we think could help fit the model. 
 
 
 ```{r}
-CRMod1<-lm(Balance~., data=Credit2)
+CRMod1<-lm(log(Balance)~., data=Credit2)
 summary(CRMod1)
 par(mfrow=c(2,2))
 plot(CRMod1)
 anova(CRMod1)
+
+CRMod2<-lm(sqrt(Balance)~., data=Credit2)
+summary(CRMod2)
+par(mfrow=c(2,2))
+plot(CRMod2)
+anova(CRMod2)
+
+CRMod3<-lm(Balance^2~., data=Credit2)
+summary(CRMod3)
+par(mfrow=c(2,2))
+plot(CRMod3)
+anova(CRMod3)
+
+CRMod4<-lm(Balance~., data=Credit2)
+summary(CRMod4)
+par(mfrow=c(2,2))
+plot(CRMod4)
+anova(CRMod4)
 ```
+The Plots for CRMod1 seem to fit best while CRMod4 has the highest r^2 value which means it is the most significant. 
+
 
 From the subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
 
