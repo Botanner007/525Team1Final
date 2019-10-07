@@ -75,7 +75,7 @@ The ncvTest's p-value shows non-signficance; thus, constant variance is present.
 
 ```{r}
 CRMod3<-lm(Balance~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
-summary(CRMod4)
+summary(CRMod3)
 par(mfrow=c(2,2))
 plot(CRMod3)
 anova(CRMod3)
