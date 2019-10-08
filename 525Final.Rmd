@@ -204,34 +204,6 @@ All models we have seen agree, on the model that corresponds to how the data is 
 how you are going to do the model selection.
 
 
-```{r}
-Credit2_Mean<- mean(Credit2$Student)
-
-set.seed(1000)
-Mine <- Sys.time()
-boots <- NULL
-for (i in 1:1000){
-  Credit2_Mean <- mean(sample(Credit2$Balance, 777, replace = TRUE))
-  boots <- c(boots, Credit2_Mean)}  
-
-Mine2 <- Sys.time()
-Mine2-Mine
-
-hist(boots, main= "Sample Distribution of Balance Means")
-
-
-```
-
-Now, I will calculate a confidence interval of 80%.
-
-```{r}
-quantile(boots,c(.1,.9))
-hist(boots)
-abline(v=quantile(boots,c(.1,.9)),col=2)
-```
-This output details that 10% of the bootstrap means are below 652.3360 , and 10% are above 690.8533  Therefore, we are 80% confident based on this bootstrap confidence interval that the mean of balances recieved is between 652.3360 and 690.8533.
-
-
 ### Problem 4
 
 
