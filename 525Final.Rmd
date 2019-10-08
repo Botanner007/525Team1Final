@@ -52,7 +52,7 @@ plot(CreditM2)
 anova(CreditM2)
 
 CreditM3<-lm(Balance^2~., data=Credit)
-summary(CreditM4)
+summary(CreditM3)
 par(mfrow=c(2,2))
 plot(CreditM3)
 anova(CreditM3)
@@ -130,16 +130,13 @@ anova(CR2Mod5,CR2Mod6)
 
 
 
-```{r cahce=TRUE}
-
-
+```{r}
 CR2Mod7=step(CR2Mod4,direction="backward")
 
 CR2Intercept <- lm(Balance^(-1)~1, data=Credit2)
 CR2Mod8 <- step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), direction="forward", data=Credit2)
 
 CR2Mod9<-step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), data=Credit2)
-
 ```
 
 The backwards step matches our chosen model, CR2Mod5.  While the forward step is different, it includes Ethnicity, a variable we previously determined, based on p-values, was not significant.  Thus, we have chosen to exclude the forward step.
