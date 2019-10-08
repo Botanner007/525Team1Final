@@ -132,6 +132,8 @@ anova(CR2Mod5,CR2Mod6)
 ```
 
 
+
+
 ```{r}
 Credit2_Mean<- mean(Credit2$Balance)
 
