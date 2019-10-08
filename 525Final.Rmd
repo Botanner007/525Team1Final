@@ -131,6 +131,12 @@ anova(CR2Mod6)
 anova(CR2Mod5,CR2Mod6)
 ```
 
+```{r cahce=TRUE}
+drop1(CR2Mod6)
+CR2Mod7=step(CR2Mod6,direction="backward")
+```
+
+
 
 <<<<<<< HEAD
 =======
@@ -191,8 +197,6 @@ Take a look at the first column, if it has a `+` before a variable it correspond
 
 All models we have seen agree, on the model that corresponds to how the data is generated, but there is no guarantee that all methods will agree, which means you should think through 
 how you are going to do the model selection.
-
->>>>>>> 67254f98d79c0f370d27bb807c70e8857edd1753
 
 
 ```{r}
