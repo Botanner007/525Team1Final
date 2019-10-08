@@ -93,11 +93,8 @@ par(mfrow=c(2,2))
 plot(CR2Mod4)
 anova(CR2Mod4)
 ```
-The Plots for CR2Mod1 seem to fit best while CR2Mod4 has the highest R-squared value which means it appears to be most significant, but R-squared values shouldn't soley decide on the fit of a model. We will continue with the log transformation since it seems to show the best fit for the model. Next, we will eliminate any insignificant variable to create a simpler model, and then explore if any interactions would help our model.
 
----- replacement text
 CR2Mod4 has the highest R-squared value which means we can account for 99.94% of _________, but R-squared values shouldn't soley decide the fit of a model. If we review the plots generated, CR2Mod4 also appears to look most like we want to see.  In light of this information, we will continue with CR2Mod4 and eliminate any insignificant variables to create a simpler model.  Afterwards, we'll explore the effect of interactions in the hope that they would improve our model even more.
----- 
 
 From the Credit2 subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
 
@@ -142,6 +139,8 @@ CR2Mod8 <- step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating
 CR2Mod9<-step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), data=Credit2)
 
 ```
+
+The backwards step matches our chosen model.  While the forward step is different, it includes Ethnicity, a variable we previously determined, based on p-values, was not significant.  Thus, we have chosen to exclude the forward step.
 
 
 
