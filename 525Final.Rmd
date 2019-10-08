@@ -136,7 +136,7 @@ anova(CR2Mod5,CR2Mod6)
 
 CR2Mod7=step(CR2Mod4,direction="backward")
 
-CR2Intercept <- lm(salary^(-1)~1, data=Salaries)
+CR2Intercept <- lm(Balance^(-1)~1, data=Credit2)
 CR2Mod8 <- step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), direction="forward", data=Credit2)
 
 ```
