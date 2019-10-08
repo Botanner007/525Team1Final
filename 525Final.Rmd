@@ -132,8 +132,68 @@ anova(CR2Mod5,CR2Mod6)
 ```
 
 
+To start to show you these processes from a computational point of view let's look at a example where we know how the true data was generated.
+We will generate a model with 5 predictor variables, that are generated from a normal distribution, and have no correlation between the predictors.  Out of the 5 variables only variable 2 and 4 
+are used in the model
+```{r cahce=TRUE}
+library(mvtnorm)
+set.seed(2016)
+X=rmvnorm(100,rep(0,5))
+Y=2+4*X[,2]+3*X[,4]+rnorm(100,0,1.5)
+
+Mod=lm(Y~X[,1]+X[,3]+X[,2]+X[,4]+X[,5])
+summary(Mod)
+```
+
+
+First we will use the `drop1` function to show backward elimination one step from the full model presented above.  
+```{r cahce=TRUE}
+drop1(Mod)
+```
+Notice this calculates the AIC and RSS associated with each variable.  The variable removed is presented in the far left column it compares the 6 possible models, removing each variable, and then sticking with the full model. 
+
+
+Now let's do the full backward selection and see what the model looks like, by default R uses AIC.  
+```{r cache=TRUE}
+M=step(Mod,direction="backward")
+```
+
+R gives the trace of the function, the decision made at each step.  As we can see it removes variable 3 first, then it removes variable 1, and finally stops after removing variable 5.  
+
+Now if we use BIC we would just do (reminder 100 is the sample size),
+
+```{r cache=TRUE}
+M=step(Mod,direction="backward", k=log(100))
+```
+
+We see that it agrees with the same steps as the AIC model presented.
+
+
+If we want to do forward selection, we need to define the scope the model, that means the smallest and largest models that you will consider.  Forward selection will start at the first model you give it. Notice how we use the `~1` which indicates the smallest model we consider is the intercept only model.  We define `M0` to be the intercept only model, and then the lower and upper to define
+the possible sets and combinations.  
+
+```{r cahce=TRUE}
+M0=lm(Y~1)
+M2=step(M0,scope=list(lower=~1, upper=~X[,1]+X[,2]+X[,3]+X[,4]+X[,5]),direction="forward")
+```
+Notice it only takes two steps, adding variable 2 and then variable 4. 
+
+
+If we don't specify a direction it uses stepwise regression (the combo of forward and backward).
+
+```{r cache=TRUE}
+M0=lm(Y~1)
+M3=step(M0,scope=list(lower=~1, upper=~X[,1]+X[,2]+X[,3]+X[,4]+X[,5]))
+```
+Take a look at the first column, if it has a `+` before a variable it corresponds to adding a that variable if it has a `-` corresponds to subtracting that variable.  
+
+All models we have seen agree, on the model that corresponds to how the data is generated, but there is no guarantee that all methods will agree, which means you should think through 
+how you are going to do the model selection.
+
+
+
 ```{r}
-Credit2_Mean<- mean(Credit2$Balance)
+Credit2_Mean<- mean(Credit2$Student)
 
 set.seed(1000)
 Mine <- Sys.time()
