@@ -1,6 +1,6 @@
 ---
 title: "525Final"
-author: "Team 1 - Jillian Chapman, Amanda Hall, Tariq Mansaray, Jennifer Snyder, David Tannerr"
+author: "Team 1 - Jillian Chapman, Amanda Hall, Tariq Mansaray, Jennifer Snyder, David Tanner"
 date: "10/8/2019"
 output: word_document
 ---
