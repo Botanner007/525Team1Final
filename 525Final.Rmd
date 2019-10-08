@@ -9,11 +9,18 @@ output: word_document
 knitr::opts_chunk$set(include = FALSE)
 ```
 
+## PROBLEM 1
 
 
-##PROBLEM 3
 
-In the Credit data in the ISLR package it contains 400 customers and information on their credit history. For full information of the data look at the help file. A company has approached us to better understand factors that influence the Balance variable which is average credit card balance in USD. Using the information in the model discuss the influential factors, and discuss the factors you choose to put in the model. Do you have any concerns about the use of certain variables in the model? Discuss how your model was created and any insights you can provide based on the results. HINT: Adding Gender and/or Ethnicity could be controversial or illegal in some uses of this this model you should discuss your decision on these variables and how it effects the organizations ability to use your model for prediction or inference.
+## PROBLEM 2
+
+
+ 
+## PROBLEM 3
+
+_In the Credit data in the ISLR package it contains 400 customers and information on their credit history. For full information of the data look at the help file. A company has approached us to better understand factors that influence the Balance variable which is average credit card balance in USD. Using the information in the model discuss the influential factors, and discuss the factors you choose to put in the model. Do you have any concerns about the use of certain variables in the model? Discuss how your model was created and any insights you can provide based on the results. HINT: Adding Gender and/or Ethnicity could be controversial or illegal in some uses of this this model you should discuss your decision on these variables and how it effects the organizations ability to use your model for prediction or inference._
+
 
 
 To better understand the factors that influence the average credit card balance variable ("Balance") in our dataset, we will explore various modeling methods and determine which variables provide us with the most useful inferences about the dataset. By determining variables to include and exclude in our analysis, we will be able to provide the customer with some valuable insights for their business.
@@ -144,8 +151,7 @@ The backwards step matches our chosen model, CR2Mod5.  While the forward step is
 
 
 
-### Problem 4
-
+## PROBLEM 4
 
 For this problem we used the Salaries data in the carData package to investigate the gender gap in the data. Our data represents the salaries of professors in the 2008-2009 year in an unspecified college. The data set consists of 397 observations with 6 variables each. The variables we will be looking at are "rank", "discipline", "yrs.since.PhD" or years since PhD, "yrs.service" or years of service, "sex", and finally "salary" as our response variable.
 
