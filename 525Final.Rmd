@@ -359,8 +359,7 @@ salariesassump3 <- lm(salary^(-1)~rank+discipline+yrs.service+sex, data=Salaries
 summary(salariesassump3)
 ```
 
-Now to interpret what our data is trying to tell us..........
-
+Now to interpret what our data is trying to tell us that with every variable at a 0 value, the average salary is about 00001.37 dollars in the inverse scale. The intercept corresponds with a female assitant professor under the A discipline. When you adjust to Associate professor, the salary in inverse scale drops about .0000019 dollars. When you adjust for the rank of Professor instead, you see a decrease of about .0000048 dollars. When you adjust for discipline B, you see a drop .0000012 dollars in salary using the inverse scale. Finally when you adjust for male, you see a decrease of about .00000049 dollars in the inverse scale, of courese this adjustment does not have much significance when you test at the level of 5% and 1%. 
 
 From our data, we see that sex is an important variable, but it is difficult to identify if there is a gender gap between Male and Female. Looking at the summary table of our linear regression model after the transformation, the adjustment from female to male seems to not play significant role when we are testing at a 5% significance level; however, at a 10% level, there is a difference in pay between genders, which indicates males make slightly less when we adjust from female to male. However, our original t-test tells us that there is a gender gap in pay. There may be a discrimination in pay when it comes to gender, but with more males in our data than females in the data set that was presented to us, it is very hard to identify. 
 
