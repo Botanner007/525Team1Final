@@ -28,7 +28,7 @@ head(Credit)
 summary(Credit)
 ```
 
-Our dataset (Credit) is a subset of data derived from a simulated dataset containing information on ten thousand customers.  The subset contains 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their account. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset, called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
+Our dataset (Credit) is derived from a simulated dataset containing information on 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their account. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset, called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
 
 Problem Statement - What variables influence the Balance amount a customer retains? 
 
@@ -142,7 +142,7 @@ CR2Mod9<-step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+C
 
 ```
 
-The backwards step matches our chosen model.  While the forward step is different, it includes Ethnicity, a variable we previously determined, based on p-values, was not significant.  Thus, we have chosen to exclude the forward step.
+The backwards step matches our chosen model, CR2Mod5.  While the forward step is different, it includes Ethnicity, a variable we previously determined, based on p-values, was not significant.  Thus, we have chosen to exclude the forward step.
 
 
 
@@ -157,19 +157,21 @@ library(carData)
 data("Salaries")
 summary(Salaries)
 ```
+
 Next, we plotted the data and viewed unique elements. 
 ```{r}
 plot(Salaries)
 str(Salaries)
 
 ```
-We can see the data and the type of variables we are working with in the data. Each variable set seems to be correlated all over the place. Several have strage plots due to them being factor variables. 
 
+We can see the data and the type of variables we are working with in the data. Each variable set seems to be correlated all over the place. Several have strage plots due to them being factor variables. 
 ```{r}
 unique(Salaries$rank)
 unique(Salaries$discipline)
 unique(Salaries$sex)
 ```
+
 We can also see the levels of each factors we are working with. 
 
 Next, we want to see how many females are in each rank, and if this could play in role in salary difference between males and females for us to investigate further.
@@ -177,6 +179,7 @@ Next, we want to see how many females are in each rank, and if this could play i
 summary(Salaries$rank)
 table(Salaries$sex,Salaries$rank)
 ```
+
 We can see that Female is pretty evenly distributed between the three ranks; however, Male is equally distirbuted between Assistant and Assocaite but is very heavily weighted in Full Professoor compared to the other two ranks. This could be because Male professors have more years of service than females, and therefore, males have had more time/opportunity to receive promotion. 
 
 Next, we will look at the years of service for Male and Female to see if that can explain the heavier weight of Full Professors that are males. 
@@ -199,6 +202,7 @@ We ran a t-test to test that null hypothesis that the mean salary of males in th
 t.test(x=Salaries$salary[Salaries$sex=="Male"], y=Salaries$salary[Salaries$sex=="Female"], alternative="greater")
 isalariesfit <- lm(salary ~., data=Salaries)
 ```
+
 Looking at the t-test, it looks like we are not able to accept the null at any significance level. We will go further and create models to help explain the salary data. 
 
 We created a model to see what variables affect salary, with salary as the response variable and the remaining variables as the predictors. 
