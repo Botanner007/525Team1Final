@@ -1,28 +1,23 @@
 ---
 title: "525Final"
-author: "Team 1 - Jillian Chapman, Amanda Hall, Tariq Mansaray, Jennifer Snyder, David Tanner"
+author: "Team 1 - Jillian Chapman, Amanda Hall, Tariq Mansaray, Jennifer Snyder, David Tannerr"
 date: "10/8/2019"
 output: word_document
 ---
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(include = FALSE)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## PROBLEM 1
 
 
+##PROBLEM 3
 
-## PROBLEM 2
+In the Credit data in the ISLR package it contains 400 customers and information on their credit history. For full information of the data look at the help file. A company has approached us to better understand factors that influence the Balance variable which is average credit card balance in USD. Using the information in the model discuss the influential factors, and discuss the factors you choose to put in the model. Do you have any concerns about the use of certain variables in the model? Discuss how your model was created and any insights you can provide based on the results. HINT: Adding Gender and/or Ethnicity could be controversial or illegal in some uses of this this model you should discuss your decision on these variables and how it effects the organizations ability to use your model for prediction or inference.
 
+To better understand factors that influence the average credit card balance variable ("Balance") we will explore various modeling methods and determine which variables provide us with the most useful inferences about the dataset. By determining variables to include and exclude in our analysis we will be able to provide the customer with some valuable insights for their business.
 
- 
-## PROBLEM 3
-
-_In the Credit data in the ISLR package it contains 400 customers and information on their credit history. For full information of the data look at the help file. A company has approached us to better understand factors that influence the Balance variable which is average credit card balance in USD. Using the information in the model discuss the influential factors, and discuss the factors you choose to put in the model. Do you have any concerns about the use of certain variables in the model? Discuss how your model was created and any insights you can provide based on the results. HINT: Adding Gender and/or Ethnicity could be controversial or illegal in some uses of this this model you should discuss your decision on these variables and how it effects the organizations ability to use your model for prediction or inference._
-
-
-To better understand the factors that influence the average credit card balance, we will explore various modeling methods and determine which variables provide us with the most useful information. By examining multiple variables in our analysis, we should be able to provide our customer with some valuable insights for their business.
+To begin, we evaluate our dataframe information.
 
 ```{r}
 library(dplyr)
@@ -33,24 +28,19 @@ head(Credit)
 summary(Credit)
 ```
 
-We begin by evaluating our dataframe information.  Our data, Credit, is derived from a simulated dataset containing information on 400 observations of 12 variables.  The summary shows that Balance could contain a zero value for some observations, but no other variables  contain zeros, N/As or negative values. Since credit providers would primarily be interested in seeking insights pertaining to customers that carry a balance on their accounts, we will omit any observations that include zeros in the Balance variable. This new subset of the Credit data, called Credit2, will be used for fitting our models via a variety of methods, in order to determine the best fit and draw conclusions for our customer. 
+Our dataset (Credit) is derived from a simulated dataset containing information on 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their account. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset, called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
 
 Problem Statement - What variables influence the Balance amount a customer retains? 
 
-To confirm our thoughts about the need to subset Credit, we first attempt to fit a model with no transformation of any of the variables, including the zeros, using the Credit dataset to depict the influence of those zeros on the model.
+We first attempt to fit a model with no transformation of the variables, including zeros, to depict the influence of those 0s on the model.
 
 ```{r}
 CreditM1<-lm(Balance~., data=Credit)
 summary(CreditM1)
-anova(CreditM1)
-```
-
-```{r scatterplot, fig.width=8, fig.height=6}
 par(mfrow=c(2,2))
 plot(CreditM1)
+anova(CreditM1)
 ```
-
-
 While variance is fairly consistent, we can clearly see the Balnace=0 values skewing the plots. We will test some transformations to the Balance to see if a better model fit can be reached while including all of the observations (including Balance=0).
 
 
@@ -62,7 +52,7 @@ plot(CreditM2)
 anova(CreditM2)
 
 CreditM3<-lm(Balance^2~., data=Credit)
-summary(CreditM3)
+summary(CreditM4)
 par(mfrow=c(2,2))
 plot(CreditM3)
 anova(CreditM3)
@@ -140,20 +130,24 @@ anova(CR2Mod5,CR2Mod6)
 
 
 
-```{r}
+```{r cahce=TRUE}
+
+
 CR2Mod7=step(CR2Mod4,direction="backward")
 
 CR2Intercept <- lm(Balance^(-1)~1, data=Credit2)
 CR2Mod8 <- step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), direction="forward", data=Credit2)
 
 CR2Mod9<-step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), data=Credit2)
+
 ```
 
 The backwards step matches our chosen model, CR2Mod5.  While the forward step is different, it includes Ethnicity, a variable we previously determined, based on p-values, was not significant.  Thus, we have chosen to exclude the forward step.
 
 
 
-## PROBLEM 4
+### Problem 4
+
 
 For this problem we used the Salaries data in the carData package to investigate the gender gap in the data. Our data represents the salaries of professors in the 2008-2009 year in an unspecified college. The data set consists of 397 observations with 6 variables each. The variables we will be looking at are "rank", "discipline", "yrs.since.PhD" or years since PhD, "yrs.service" or years of service, "sex", and finally "salary" as our response variable.
 
@@ -216,7 +210,7 @@ We created a model to see what variables affect salary, with salary as the respo
 salariesfit <- lm(salary ~., data=Salaries)
 summary(salariesfit)
 ```
-We can see that the intercept is 65955, which is the baseline salary in USD for a female, assistant professor with a discipline of 'a'. ## Ph.D??##
+We can see that the intercept is 65955, which is the baseline salary in USD for a female, assistant professor with a discipline of 'a'.
 I can see that all other variables held constant that the sex of Male would increase that baseline salary by 4783; however, looking at the p-value of 0.215, indicates it is not significant at the 0.05 or 0.01 level. Also, yrs.since.phd and yrs.service are not significant at the 0.01 level. Also, I can see how salary increases when faculty members get promoted to an Associate professor and to a Full professor.
 
 Next, we used an ANOVA to compare the significance of each variable using their variance.
@@ -310,9 +304,10 @@ salariesassump3 <- lm(salary^(-1)~rank+discipline+yrs.service+sex, data=Salaries
 summary(salariesassump3)
 ```
 
-Now to interpret what our data is trying to tell us that with every variable at a 0 value, the average salary is about 00001.37 dollars in the inverse scale. The intercept corresponds with a female assitant professor under the A discipline. When you adjust to Associate professor, the salary in inverse scale drops about .0000019 dollars. When you adjust for the rank of Professor instead, you see a decrease of about .0000048 dollars. When you adjust for discipline B, you see a drop .0000012 dollars in salary using the inverse scale. Finally when you adjust for male, you see a decrease of about .00000049 dollars in the inverse scale, of courese this adjustment does not have much significance when you test at the level of 5% and 1%. 
 
-From our data, we see that sex is an important variable, but it is difficult to identify if there is a gender gap between Male and Female. Looking at the summary table of our linear regression model after the transformation, the adjustment from female to male seems to not play significant role when we are testing at a 5% significance level; however, at a 10% level, there is a difference in pay between genders, which indicates males make slightly less when we adjust from female to male. However, our original t-test tells us that there is a gender gap in pay. There may be a discrimination in pay when it comes to gender, but with more males in our data than females in the data set that was presented to us, it is very hard to identify. 
+Now to interpret the data, it looks as if the change betwen a female professor and a male is not significant, in other words the difference in salaries is negligible. Professors that are in theoretical departments seem to get paid more than those that work in applied departments. Of course, going from an assistant professor to a associate professor tends to see a jump in salary and likewise, going from associate professor to just professor sees another jump in one's salary. to put things into perspective, we can confidently say if you had came into a college as an assistant professor in a theoretical department you would more than likely have the lowest salary relatively speaking. As the years go by, your salary should also increase. Now in contrast, if you were to come into a university as a full Professor teaching in an applied department, you would likely see a higher salary.
+
+From our data, we see that sex is an important variable, but it is difficult to identify if there is a gender gap between Male and Female. Looking at the summary table of our linear regression model after the transformation, the adjustment from female to male seems to not play significant role when we are testing at a 5% significance level; however, at a 10% level, there is a difference in pay between genders, which indicates males make slightly less when we adjust from female to male. However, our original t-test tells us that there is a gender gap in pay. There may be a discrimination in pay when it comes to gender, but with more males in our data than females in the data set that was presented to us, it is very hard to identify. Lastly, our anova model states that sex is a useless variable wherelese our stepwise regression opted to keep it. Just as was said before, the amount of females to males may be skewing the data. 
 
 
 
