@@ -78,15 +78,18 @@ par(mfrow=c(2,2))
 plot(CreditM3)
 ```
 
-The plots, shown after these transformations, are clearly still effected by the presence of the zeros. Thus, for the purpose of our analysis, omitting the zeros will allow for the most effective conclusions and will permit our models to provide clearer insight into the varibale relationships. We will continue to seek a well-fit model using the aforementioned filter to exclude the zeros and naming the subset Credit2. 
+...
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
-summary(Credit2)
 plot(Credit2)
 ```
 
-Our initial models will contain all variables present in the subset Credit2 as predictors, except Balance, which will be the response variable. In order to find the best fit, we will use multiple transfromations and fit multiple models. 
+```{r,include=TRUE}
+summary(Credit2)
+```
+
+...
 
 
 ```{r}
