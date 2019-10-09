@@ -114,10 +114,6 @@ anova(CR2Mod4)
 summary(CR2Mod4)
 ```
 
-
-
-
-
 __log__
 Multiple R-squared:  0.7836,	Adjusted R-squared:  0.7749  
 
