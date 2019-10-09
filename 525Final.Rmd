@@ -143,61 +143,101 @@ plot(CR2Mod4)
 ```
 
 
-The model with no transformation to Balance has the highest R-squared value which means we can account for 99.94% of the variance with this model, but R-squared values shouldn't soley decide the fit of a model. If we review the plots generated, the no transformation plot also appears to look most like we want to see.  In light of these results, we will continue without transforming Balance and move forward with eliminating any insignificant variables in an effort to create a simpler model.  An anova should help with this.
+The model with no transformation to Balance has the highest R-squared value which means we can account for 99.94% of the variance with this model, but R-squared values shouldn't soley decide the fit of a model. If we review the plots generated, the no transformation plot also appears to look most like we want to see.  In light of these results, we will continue without transforming Balance and move forward with eliminating any insignificant variables in an effort to create a simpler model.  An anova should help with this, but first we'll review the model's summary.
 
 ```{r,include=TRUE}
-anova(CR2Mod4)
+summary(CR2Mod4)
 ```
 
-In the Credit2 subset's summary we saw that all the variables were significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
+In this summary of the model without transformations, we see that all the variables were significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables, rerun our summary data, take a look at the plot and compare the original model with our simplified model.
 
-Afterwards, we'll explore the effect of interactions in the hope that they would improve our model even more.
-
-```{r}
+```{r,include=FALSE}
 CR2Mod5<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
+```
+
+
+```{r,include=TRUE}
 summary(CR2Mod5)
 par(mfrow=c(2,2))
 plot(CR2Mod5)
+```
+
+So far, this looks promising.  Our plots confirm the similarity of the the models. 
+
+```{r,include=TRUE}
 anova(CR2Mod5)
 anova(CR2Mod5,CR2Mod4)
 ```
 
-Our ANOVA comparing CR2Mod4 (the bigger model) and CR2Mod5 (the smaller model) shows a p-value of greater than 0.05.  Due to this, we would reject the notion that the models are different and choose the simplier model to work with.  The review of our plots confirm the similarity of the the models.  To be sure the CR2Mod5 is exactly what we need, we'll run a ncvTest, boxCox and powerTransformation.
+The ANOVA comparing our no transformation-all inclusive (bigger) model and our smaller simplified model shows a p-value of greater than 0.05.  Due to this, we would accept the notion that the models are the same and choose the simplier model to work with.  To be sure the simplified model is all that we need, we'll run a ncvTest, boxCox and powerTransformation.
 
-```{r}
+```{r,include=TRUE}
 ncvTest(CR2Mod5)
+```
+
+The ncvTest's p-value shows non-signficance; thus, constant variance is present. 
+
+```{r,include=TRUE}
 boxCox(CR2Mod5)
+```
+
+The boxCox proves curious as there is no confidence level shown other than at 1 and the curve is not the typical arc expected.
+
+```{r,include=TRUE}
 attach(Credit2)
 summary(powerTransform(cbind(Balance,Income,Limit,Rating,Cards,Age,Student)))
 detach(Credit2)
 ```
 
-The ncvTest's p-value shows non-signficance; thus, constant variance is present.  The boxCox proves curious as there is no confidence level shown other than at 1 and the curve is not the typical arc expected. When we compare it to the powerTranform the likelihood ratios both show at significant level, confirming transforming to log or not transforming at all is not the same as using the recommended transformation provided.  The recommended transformation for all variables except the Student factor, appears to be to the power of 1.  Since increasing a variable to the power of one would simply be it's own number, we will opt to not transform the variables.  An move to add interactions in the hope that they will improve our model.
+When we look to the powerTranform, the likelihood ratios both show at a significant level, confirming transforming to log or not transforming at all is not the same as using the recommended transformation provided.  The recommended transformation for all variables except the Student factor, appears to be to the power of 1.  Since increasing a variable to the power of one would simply be it's own number, we will opt to - again - not transform the variables, and move to add interactions in the hope that they will improve our model.
 
-```{r}
+Since one would expect retaining a balance on a credit would be associated with the ability to pay the balance off (Income) or a focus on increasing a credit score (Rating), these are the two interactions we'll attempt in our model.  
+
+
+```{r,include=FALSE}
 CR2Mod6<-lm(Balance~Income+Limit+Rating+Cards+Age+Student+Income*Limit+Rating*Limit, data=Credit2)
+```
+
+A review of the model's summary proves interesting.  While the interaction of Rating to Limit shows significant at the  level, Income to Limit does not.  Also, including these interactions causes Rating to shift above the signifiance level.  We'll continue to evaluate this new model by looking at the plots.
+
+```{r,include=TRUE}
 summary(CR2Mod6)
+```
+
+Nothing appears out of the ordinary with the following plots.  We'll review the anovas for additional information.
+
+```{r,include=TRUE}
 par(mfrow=c(2,2))
 plot(CR2Mod6)
+```
+
+The one-way anova of our model with interactions confirms the interaction of Income to Limit is insignificant.
+
+```{r,include=TRUE}
 anova(CR2Mod6)
+```
+
+Our final evaluation of the interaction model shows a p-value of 0.05854.  A value so close to the border of significance we wonder if the interactions have really added any additional information for our client when trying to infer why a balance would be retained.  Thus, we will abandon this line of evaluation and shift to a stepwise model selection for additional insight.
+
+```{r,include=TRUE}
 anova(CR2Mod5,CR2Mod6)
 ```
 
+We initiate the stepwise model selection with a backwards option as this process has the aiblity to evalute the greatest amount of information we have available to us and uses the most predictors.
 
-
-```{r cahce=TRUE}
-
-
+```{r,include=FALSE}
 CR2Mod7=step(CR2Mod4,direction="backward")
-
-CR2Intercept <- lm(Balance^(-1)~1, data=Credit2)
-CR2Mod8 <- step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), direction="forward", data=Credit2)
-
-CR2Mod9<-step(CR2Intercept, scope=list(lower=~1, upper=~ID+Income+Limit+Rating+Cards+Age+Education+Gender+Student+Married+Ethnicity), data=Credit2)
-
 ```
 
-The backwards step matches our chosen model, CR2Mod5.  While the forward step is different, it includes Ethnicity, a variable we previously determined, based on p-values, was not significant.  Thus, we have chosen to exclude the forward step.
+The stepwise model begins with 
+
+__Balance ~ ID + Income + Limit + Rating + Cards + Age + Education + Gender + Student + Married + Ethnicity__
+    
+and iterates through until it reaches its conclusion
+
+__Balance ~ Income + Limit + Rating + Cards + Age + Student + Married__
+
+The backwards step matches our chosen model closely, as Married is the only variable that is discrepant.  The variables both models agreed upon were Income, Limit, Rating, Cards, Age, and Student.  These variables, as well as Married, are worth further investigation including added variable plots to evaluate relationships and additional interaction modeling.
 
 
 
