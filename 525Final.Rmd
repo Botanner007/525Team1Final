@@ -89,12 +89,11 @@ anova(CreditM3)
 par(mfrow=c(2,2))
 plot(CreditM2)
 
->>>>>>> 72b2d44d402a2e9683c81f12bbda885d75d63f01
 par(mfrow=c(2,2))
 plot(CreditM3)
 ```
 
-...
+The plots, shown after the transformations, are clearly still effected by the presence of the zeros. Thus, for the purpose of our analysis, omitting the zeros will allow for the most effective conclusions and will permit our models to provide clearer insight into the varibale relationships. We will continue to seek a well-fit model using the aforementioned filter and generate a subset, Credit2, which excludes the zeros. We can see in the summary data, the zeros in Balance have been removed.
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
