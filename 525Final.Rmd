@@ -5,8 +5,13 @@ date: "10/8/2019"
 output: word_document
 ---
 
+<<<<<<< HEAD
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+=======
+```{r,include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+>>>>>>> 72b2d44d402a2e9683c81f12bbda885d75d63f01
 ```
 
 
@@ -19,44 +24,76 @@ To better understand factors that influence the average credit card balance vari
 
 To begin, we evaluate our dataframe information.
 
-```{r}
+```{r,include=FALSE}
 library(dplyr)
 library(ISLR)
 library(alr4)
 str(Credit)
 head(Credit)
+```
+
+We begin by evaluating our dataframe information.  Our data, Credit, is derived from a simulated dataset containing information on 400 observations of 12 variables.  The summary shows that Balance could contain a zero value for some observations, but no other variables  contain zeros, N/As or negative values.  
+
+```{r,include=TRUE}
 summary(Credit)
 ```
 
+<<<<<<< HEAD
 Our dataset (Credit) is derived from a simulated dataset containing information on 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their account. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset, called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
+=======
+Since credit providers would primarily be interested in seeking insights pertaining to customers that carry a balance on their accounts, we will omit any observations that include zeros in the Balance variable. This new subset of the Credit data, called Credit2, will be used for fitting our models via a variety of methods, in order to determine the best fit and draw conclusions for our customer. 
+>>>>>>> 72b2d44d402a2e9683c81f12bbda885d75d63f01
 
 Problem Statement - What variables influence the Balance amount a customer retains? 
 
 We first attempt to fit a model with no transformation of the variables, including zeros, to depict the influence of those 0s on the model.
 
-```{r}
+```{r,include=FALSE}
 CreditM1<-lm(Balance~., data=Credit)
 summary(CreditM1)
+<<<<<<< HEAD
+=======
+anova(CreditM1)
+```
+
+```{r,include=TRUE}
+>>>>>>> 72b2d44d402a2e9683c81f12bbda885d75d63f01
 par(mfrow=c(2,2))
 plot(CreditM1)
 anova(CreditM1)
 ```
+<<<<<<< HEAD
 While variance is fairly consistent, we can clearly see the Balnace=0 values skewing the plots. We will test some transformations to the Balance to see if a better model fit can be reached while including all of the observations (including Balance=0).
+=======
 
 
-```{r}
+While the variance shown in the plots is fairly consistent, we can clearly see the Balnace=0 values skewing the data.  We'll test some basic transformations (sqrt and ^2, but no log because of the zeros) on the Balance to see if a better model fit can be obtained while retaining all of the observations (including Balance=0).
+>>>>>>> 72b2d44d402a2e9683c81f12bbda885d75d63f01
+
+
+```{r,include=FALSE}
 CreditM2<-lm(sqrt(Balance)~., data=Credit)
 summary(CreditM2)
-par(mfrow=c(2,2))
-plot(CreditM2)
 anova(CreditM2)
 
 CreditM3<-lm(Balance^2~., data=Credit)
+<<<<<<< HEAD
 summary(CreditM4)
-par(mfrow=c(2,2))
-plot(CreditM3)
+=======
+summary(CreditM3)
 anova(CreditM3)
 ```
+
+
+```{r,include=TRUE}
+par(mfrow=c(2,2))
+plot(CreditM2)
+
+>>>>>>> 72b2d44d402a2e9683c81f12bbda885d75d63f01
+par(mfrow=c(2,2))
+plot(CreditM3)
+```
+
 The plots after transformations are still effected by the presence of 0's in the Credit data. For the purpose of this analysis, omitting 0's will allow for the most effective conclusions and will allow models to provide clearer insight into the varibale relationships. We will continue to seek a well-fit model using a filter to exclude 0's and naming the subset Credit2. 
 
 ```{r}
