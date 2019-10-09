@@ -92,20 +92,16 @@ summary(Credit2)
 The summary data shows the zeros in Balance have been removed; now we can attempt to fit better models from this subset.  All of the variables, except Balance, will be used as predictors, and Balance will continue to be our response variable. To find the best fit, we will begin by using multiple transformations of Balance, including log, sqrt, ^2 and no transformation. 
 
 
-
 ```{r,include=FALSE}
 CR2Mod1<-lm(log(Balance)~., data=Credit2)
 anova(CR2Mod1)
 summary(CR2Mod1)
-
 CR2Mod2<-lm(sqrt(Balance)~., data=Credit2)
 anova(CR2Mod2)
 summary(CR2Mod2)
-
 CR2Mod3<-lm(Balance^2~., data=Credit2)
 anova(CR2Mod3)
 summary(CR2Mod3)
-
 CR2Mod4<-lm(Balance~., data=Credit2)
 anova(CR2Mod4)
 summary(CR2Mod4)
@@ -113,39 +109,49 @@ summary(CR2Mod4)
 
 
 
+
+
+__log__
+Multiple R-squared:  0.7836,	Adjusted R-squared:  0.7749  
+
 ```{r,include=TRUE}
 par(mfrow=c(2,2))
 plot(CR2Mod1)
 ```
 
-Multiple R-squared:  0.9994,	Adjusted R-squared:  0.9994 
+__sqrt__
+Multiple R-squared:  0.9591,	Adjusted R-squared:  0.9575
 
 ```{r,include=TRUE}
 par(mfrow=c(2,2))
 plot(CR2Mod2)
 ```
 
-Multiple R-squared:  0.9994,	Adjusted R-squared:  0.9994 
+__^2__
+Multiple R-squared:  0.9201,	Adjusted R-squared:  0.9168 
 
 ```{r,include=TRUE}
 par(mfrow=c(2,2))
 plot(CR2Mod3)
 ```
 
+__None__
 Multiple R-squared:  0.9994,	Adjusted R-squared:  0.9994 
-
 ```{r,include=TRUE}
 par(mfrow=c(2,2))
 plot(CR2Mod4)
 ```
 
 
-The...
+The model with no transformation to Balance has the highest R-squared value which means we can account for 99.94% of the variance with this model, but R-squared values shouldn't soley decide the fit of a model. If we review the plots generated, the no transformation plot also appears to look most like we want to see.  In light of these results, we will continue without transforming Balance and move forward with eliminating any insignificant variables in an effort to create a simpler model.  An anova should help with this.
 
+```{r,include=TRUE}
+anova(CR2Mod4)
+```
 
-CR2Mod4 has the highest R-squared value which means we can account for 99.94% of the variance with this model, but R-squared values shouldn't soley decide the fit of a model. If we review the plots generated, CR2Mod4 also appears to look most like we want to see.  In light of this information, we will continue with CR2Mod4 and eliminate any insignificant variables to create a simpler model.  Afterwards, we'll explore the effect of interactions in the hope that they would improve our model even more.
+In the Credit2 subset's summary we saw that all the variables were significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
 
-From the Credit2 subset's summary we can see that all the variables are significant at the 0.05 level except: ID, Education, Gender, Married and Ethnicity.  We will remove these variables and rerun our summary data.
+Afterwards, we'll explore the effect of interactions in the hope that they would improve our model even more.
 
 ```{r}
 CR2Mod5<-lm(Balance~Income+Limit+Rating+Cards+Age+Student, data=Credit2)
