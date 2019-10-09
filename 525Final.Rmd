@@ -22,10 +22,7 @@ knitr::opts_chunk$set(include = FALSE)
 _In the Credit data in the ISLR package it contains 400 customers and information on their credit history. For full information of the data look at the help file. A company has approached us to better understand factors that influence the Balance variable which is average credit card balance in USD. Using the information in the model discuss the influential factors, and discuss the factors you choose to put in the model. Do you have any concerns about the use of certain variables in the model? Discuss how your model was created and any insights you can provide based on the results. HINT: Adding Gender and/or Ethnicity could be controversial or illegal in some uses of this this model you should discuss your decision on these variables and how it effects the organizations ability to use your model for prediction or inference._
 
 
-
-To better understand the factors that influence the average credit card balance variable ("Balance") in our dataset, we will explore various modeling methods and determine which variables provide us with the most useful inferences about the dataset. By determining variables to include and exclude in our analysis, we will be able to provide the customer with some valuable insights for their business.
-
-To begin, we evaluate our dataframe information.
+To better understand the factors that influence the average credit card balance, we will explore various modeling methods and determine which variables provide us with the most useful information. By examining multiple variables in our analysis, we should be able to provide our customer with some valuable insights for their business.
 
 ```{r}
 library(dplyr)
@@ -36,19 +33,24 @@ head(Credit)
 summary(Credit)
 ```
 
-Our dataset (Credit) is derived from a simulated dataset containing information on 400 observations on 12 variables.  The summary shows that Balance could contain a zero value for some observations. The dataset does not contain N/As or negative values in any of the variables. Credit providers would not be primarily interested in 0-balance customers, but instead would seek insights pertaining to customers that carry a balance on their account. In order to identify the significant relationships between Balance and the predictors, we will omit any observations that include 0 in the Balance variable. This subset of the Credit dataset, called Credit2, will be used for fitting models with a variety of methods, in order to determine the best fit, and draw some conclusions for the customer. 
+We begin by evaluating our dataframe information.  Our data, Credit, is derived from a simulated dataset containing information on 400 observations of 12 variables.  The summary shows that Balance could contain a zero value for some observations, but no other variables  contain zeros, N/As or negative values. Since credit providers would primarily be interested in seeking insights pertaining to customers that carry a balance on their accounts, we will omit any observations that include zeros in the Balance variable. This new subset of the Credit data, called Credit2, will be used for fitting our models via a variety of methods, in order to determine the best fit and draw conclusions for our customer. 
 
 Problem Statement - What variables influence the Balance amount a customer retains? 
 
-We first attempt to fit a model with no transformation of the variables, including zeros, to depict the influence of those 0s on the model.
+To confirm our thoughts about the need to subset Credit, we first attempt to fit a model with no transformation of any of the variables, including the zeros, using the Credit dataset to depict the influence of those zeros on the model.
 
 ```{r}
 CreditM1<-lm(Balance~., data=Credit)
 summary(CreditM1)
-par(mfrow=c(2,2))
-plot(CreditM1)
 anova(CreditM1)
 ```
+
+```{r scatterplot, fig.width=8, fig.height=6}
+par(mfrow=c(2,2))
+plot(CreditM1)
+```
+
+
 While variance is fairly consistent, we can clearly see the Balnace=0 values skewing the plots. We will test some transformations to the Balance to see if a better model fit can be reached while including all of the observations (including Balance=0).
 
 
