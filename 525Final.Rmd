@@ -94,7 +94,7 @@ par(mfrow=c(2,2))
 plot(CreditM3)
 ```
 
-The plots after transformations are still effected by the presence of 0's in the Credit data. For the purpose of this analysis, omitting 0's will allow for the most effective conclusions and will allow models to provide clearer insight into the varibale relationships. We will continue to seek a well-fit model using a filter to exclude 0's and naming the subset Credit2. 
+The plots, shown after these transformations, are clearly still effected by the presence of the zeros. Thus, for the purpose of our analysis, omitting the zeros will allow for the most effective conclusions and will permit our models to provide clearer insight into the varibale relationships. We will continue to seek a well-fit model using the aforementioned filter to exclude the zeros and naming the subset Credit2. 
 
 ```{r}
 Credit2=Credit%>% filter(Balance>0)
